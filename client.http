@@ -1,0 +1,65 @@
+@baseUrl = http://localhost:3333
+@authToken = {{authenticate.response.body.access_token}}
+
+# @name create_account
+POST {{baseUrl}}/accounts
+Content-Type: application/json
+
+{
+    "name": "Vinicius",
+    "email": "vinicius1@teste.com",
+    "password": "123456"
+}
+
+###
+
+# @name authenticate
+POST {{baseUrl}}/sessions
+Content-Type: application/json
+
+{
+    "email": "gostosa@rabuda.com",
+    "password": "123456"
+}
+
+###
+
+# @name create_question
+POST {{baseUrl}}/questions
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "title": "Test Question 2",
+    "content": "Question content"
+}
+
+###
+
+# @name fetch_recent_questions
+
+GET  {{baseUrl}}/questions?page=1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name create_answer
+POST {{baseUrl}}/questions/45a46bcf-51ca-40c2-a790-53e3764cccc0/answers
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "content": "Answer content"
+}
+
+###
+
+# @name edit_answer
+PUT {{baseUrl}}/answers/32a8ad9e-36da-471f-addd-20ebeb8260fc
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "content": "Edited content"
+}
