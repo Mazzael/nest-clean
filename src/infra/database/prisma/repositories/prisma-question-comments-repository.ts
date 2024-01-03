@@ -42,7 +42,7 @@ export class PrismaQuestionCommentsRepository
     })
   }
 
-  async create(questionComment: QuestionComment) {
+  async create(questionComment: QuestionComment): Promise<void> {
     const data = PrismaQuestionCommentMapper.toPrisma(questionComment)
 
     await this.prisma.comment.create({

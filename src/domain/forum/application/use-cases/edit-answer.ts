@@ -23,7 +23,7 @@ type EditAnswerUseCaseResponse = Either<
   }
 >
 
-Injectable()
+@Injectable()
 export class EditAnswerUseCase {
   constructor(
     private answersRepository: AnswersRepository,
@@ -36,7 +36,6 @@ export class EditAnswerUseCase {
     content,
     attachmentsIds,
   }: EditAnswerUseCaseRequest): Promise<EditAnswerUseCaseResponse> {
-    console.log(this.answersRepository)
     const answer = await this.answersRepository.findById(answerId)
 
     if (!answer) {

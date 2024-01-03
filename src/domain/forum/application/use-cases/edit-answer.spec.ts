@@ -73,14 +73,14 @@ describe('Edit Answer', () => {
   })
 
   it('should not be able to edit a answer from another user', async () => {
-    const answerToBeDeleted = makeAnswer(
+    const answer = makeAnswer(
       {
         authorId: new UniqueEntityID('author-2'),
         content: 'Testing Edit Use Case',
       },
       new UniqueEntityID('answer-1'),
     )
-    inMemoryAnswersRepository.create(answerToBeDeleted)
+    inMemoryAnswersRepository.create(answer)
 
     const result = await sut.execute({
       answerId: 'answer-1',
@@ -91,5 +91,53 @@ describe('Edit Answer', () => {
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(NotAllowedError)
+  })
+
+  it('should sync new and removed attachments when editing an answer', async () => {
+    const answerOne = makeAnswer()
+    await inMemoryAnswersRepository.create(answerOne)
+
+    const answerToBeEdited = makeAnswer(
+      {
+        authorId: new UniqueEntityID('author-2'),
+        content: 'Testing Edit Use Case',
+      },
+      new UniqueEntityID('answer-2'),
+    )
+    await inMemoryAnswersRepository.create(answerToBeEdited)
+
+    inMemoryAnswerAttachmentsRepository.items.push(
+      makeAnswerAttachment({
+        answerId: answerToBeEdited.id,
+        attachmentId: new UniqueEntityID('1'),
+      }),
+      makeAnswerAttachment({
+        answerId: answerToBeEdited.id,
+        attachmentId: new UniqueEntityID('2'),
+      }),
+    )
+
+    const answerThree = makeAnswer()
+    inMemoryAnswersRepository.create(answerThree)
+
+    const result = await sut.execute({
+      answerId: answerToBeEdited.id.toString(),
+      authorId: 'author-2',
+      content: 'New answer content',
+      attachmentsIds: ['1', '3'],
+    })
+
+    expect(result.isRight()).toBe(true)
+    expect(inMemoryAnswerAttachmentsRepository.items).toHaveLength(2)
+    expect(inMemoryAnswerAttachmentsRepository.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          attachmentId: new UniqueEntityID('1'),
+        }),
+        expect.objectContaining({
+          attachmentId: new UniqueEntityID('3'),
+        }),
+      ]),
+    )
   })
 })
