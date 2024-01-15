@@ -11,7 +11,15 @@ import {
   UseInterceptors,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 
+@ApiTags('Attachments')
 @Controller('/attachments')
 export class UploadAttachmentController {
   constructor(
@@ -20,6 +28,22 @@ export class UploadAttachmentController {
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Attachment file',
+    type: 'file',
+  })
+  @ApiOperation({ summary: 'Upload and create an attachment' })
+  @ApiResponse({
+    status: 200,
+    description: 'Attachment uploaded and created successfully',
+  })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({
+    status: 422,
+    description: 'Unprocessable Entity - Invalid attachment type',
+    type: InvalidAttachmentTypeError,
+  })
   async handle(
     @UploadedFile(
       new ParseFilePipe({

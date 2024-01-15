@@ -10,21 +10,45 @@ import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { z } from 'zod'
 import { AnswerQuestionUseCase } from '@/domain/forum/application/use-cases/answer-question'
+import {
+  ApiOperation,
+  ApiParam,
+  ApiProperty,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 
 const answerQuestionBodySchema = z.object({
   content: z.string(),
   attachments: z.array(z.string().uuid()),
 })
 
-type AnswerQuestionBodySchema = z.infer<typeof answerQuestionBodySchema>
+class AnswerQuestionBodySchema {
+  @ApiProperty({ description: 'The content of the answer' })
+  content!: string
+
+  @ApiProperty({
+    type: [String],
+    description: 'An array of attachment IDs (UUIDs)',
+    format: 'uuid',
+    isArray: true,
+  })
+  attachments!: string[]
+}
 
 const bodyValidationPipe = new ZodValidationPipe(answerQuestionBodySchema)
 
+@ApiTags('Questions')
 @Controller('/questions/:questionId/answers')
 export class AnswerQuestionController {
   constructor(private answerQuestion: AnswerQuestionUseCase) {}
 
   @Post()
+  @ApiOperation({ summary: 'Answer a question' })
+  @ApiParam({ name: 'questionId', description: 'The ID of the question' })
+  @ApiResponse({ status: 200, description: 'Question answered successfully' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async handle(
     @Body(bodyValidationPipe) body: AnswerQuestionBodySchema,
     @CurrentUser() user: UserPayload,

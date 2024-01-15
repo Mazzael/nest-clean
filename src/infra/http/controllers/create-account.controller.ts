@@ -12,6 +12,12 @@ import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { RegisterStudentUseCase } from '@/domain/forum/application/use-cases/register-student'
 import { StudentAlreadyExistsError } from '@/domain/forum/application/use-cases/errors/student-already-exists-error'
 import { Public } from '@/infra/auth/public'
+import {
+  ApiOperation,
+  ApiProperty,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 
 const createAccountBodySchema = z.object({
   name: z.string(),
@@ -19,8 +25,18 @@ const createAccountBodySchema = z.object({
   password: z.string(),
 })
 
-type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>
+class CreateAccountBodySchema {
+  @ApiProperty({ description: 'The user name' })
+  name!: string
 
+  @ApiProperty({ description: 'The email of the account', format: 'email' })
+  email!: string
+
+  @ApiProperty({ description: 'The password of the account' })
+  password!: string
+}
+
+@ApiTags('Accounts')
 @Controller('/accounts')
 @Public()
 export class CreateAccountController {
@@ -29,6 +45,14 @@ export class CreateAccountController {
   @Post()
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createAccountBodySchema))
+  @ApiOperation({ summary: 'Create a new account' })
+  @ApiResponse({ status: 201, description: 'Account created successfully' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({
+    status: 409,
+    description: 'Conflict - User already exists',
+    type: StudentAlreadyExistsError,
+  })
   async handle(@Body() body: CreateAccountBodySchema) {
     const { name, email, password } = body
 

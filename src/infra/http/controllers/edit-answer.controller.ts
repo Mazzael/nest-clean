@@ -11,6 +11,14 @@ import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { z } from 'zod'
 import { EditAnswerUseCase } from '@/domain/forum/application/use-cases/edit-answer'
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiProperty,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 
 const editAnswerBodySchema = z.object({
   content: z.string(),
@@ -19,14 +27,31 @@ const editAnswerBodySchema = z.object({
 
 const bodyValidationPipe = new ZodValidationPipe(editAnswerBodySchema)
 
-type EditAnswerBodySchema = z.infer<typeof editAnswerBodySchema>
+class EditAnswerBodySchema {
+  @ApiProperty({ description: 'The new content of the answer' })
+  content!: string
 
+  @ApiProperty({
+    type: [String],
+    description: 'An array of attachment IDs (UUIDs)',
+    format: 'uuid',
+    isArray: true,
+  })
+  attachments!: string[]
+}
+@ApiTags('Answers')
 @Controller('/answers/:id')
 export class EditAnswerController {
   constructor(private editAnswer: EditAnswerUseCase) {}
 
   @Put()
   @HttpCode(204)
+  @ApiOperation({ summary: 'Edit an answer' })
+  @ApiParam({ name: 'id', description: 'The ID of the answer to edit' })
+  @ApiBody({ type: EditAnswerBodySchema })
+  @ApiResponse({ status: 204, description: 'Answer edited successfully' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async handle(
     @Body(bodyValidationPipe) body: EditAnswerBodySchema,
     @CurrentUser() user: UserPayload,
