@@ -16,6 +16,7 @@ import {
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger'
+import { CommentsResponse } from './fetch-answer-comments.controller'
 
 const pageQueryParamSchema = z
   .string()
@@ -38,16 +39,19 @@ export class FetchQuestionCommentsController {
   @ApiParam({
     name: 'questionId',
     description: 'The ID of the question to fetch comments for',
+    example: '1',
   })
   @ApiQuery({
     name: 'page',
     type: Number,
-    description: 'Page number (default: page 1)',
+    description: 'Page number (default: 1)',
     required: false,
   })
   @ApiResponse({
     status: 200,
     description: 'Comments fetched successfully',
+    type: CommentsResponse,
+    isArray: true,
   })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })

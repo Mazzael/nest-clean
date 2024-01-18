@@ -15,9 +15,15 @@ import {
   ApiBody,
   ApiConsumes,
   ApiOperation,
+  ApiProperty,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
+
+class AttachmentIdResponse {
+  @ApiProperty({ description: 'Attachment Id', example: '1' })
+  attachmentId!: string
+}
 
 @ApiTags('Attachments')
 @Controller('/attachments')
@@ -31,12 +37,22 @@ export class UploadAttachmentController {
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Attachment file',
-    type: 'file',
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+          description: 'The file to upload',
+        },
+      },
+    },
   })
   @ApiOperation({ summary: 'Upload and create an attachment' })
   @ApiResponse({
     status: 200,
     description: 'Attachment uploaded and created successfully',
+    type: AttachmentIdResponse,
   })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({

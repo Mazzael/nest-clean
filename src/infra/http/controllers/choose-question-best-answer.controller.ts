@@ -23,6 +23,7 @@ export class ChooseQuestionBestAnswerController {
   @ApiParam({
     name: 'answerId',
     description: 'The ID of the answer to choose as the best',
+    example: '1',
   })
   @ApiResponse({ status: 204, description: 'Best answer chosen successfully' })
   @ApiResponse({ status: 400, description: 'Bad Request' })

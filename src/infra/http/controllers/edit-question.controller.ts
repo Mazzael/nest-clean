@@ -27,10 +27,16 @@ const editQuestionBodySchema = z.object({
 })
 
 class EditQuestionBodySchema {
-  @ApiProperty({ description: 'The new title of the question' })
+  @ApiProperty({
+    description: 'The new title of the question',
+    example: 'New Question Title',
+  })
   title!: string
 
-  @ApiProperty({ description: 'The new content of the question' })
+  @ApiProperty({
+    description: 'The new content of the question',
+    example: 'New question content',
+  })
   content!: string
 
   @ApiProperty({
@@ -38,6 +44,7 @@ class EditQuestionBodySchema {
     description: 'An array of attachment IDs (UUIDs)',
     format: 'uuid',
     isArray: true,
+    example: ['1', '2'],
   })
   attachments!: string[]
 }
@@ -52,7 +59,11 @@ export class EditQuestionController {
   @Put()
   @HttpCode(204)
   @ApiOperation({ summary: 'Edit a question' })
-  @ApiParam({ name: 'id', description: 'The ID of the question to edit' })
+  @ApiParam({
+    name: 'id',
+    description: 'The ID of the question to edit',
+    example: '1',
+  })
   @ApiBody({ type: EditQuestionBodySchema })
   @ApiResponse({ status: 204, description: 'Question edited successfully' })
   @ApiResponse({ status: 400, description: 'Bad Request' })

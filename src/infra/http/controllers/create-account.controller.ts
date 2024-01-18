@@ -26,10 +26,14 @@ const createAccountBodySchema = z.object({
 })
 
 class CreateAccountBodySchema {
-  @ApiProperty({ description: 'The user name' })
+  @ApiProperty({ description: 'The user name', example: 'John Doe' })
   name!: string
 
-  @ApiProperty({ description: 'The email of the account', format: 'email' })
+  @ApiProperty({
+    description: 'The email of the account',
+    format: 'email',
+    example: 'johndoe@example.com',
+  })
   email!: string
 
   @ApiProperty({ description: 'The password of the account' })

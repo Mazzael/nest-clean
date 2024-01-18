@@ -24,7 +24,10 @@ const answerQuestionBodySchema = z.object({
 })
 
 class AnswerQuestionBodySchema {
-  @ApiProperty({ description: 'The content of the answer' })
+  @ApiProperty({
+    description: 'The content of the answer',
+    example: 'Answer of the question',
+  })
   content!: string
 
   @ApiProperty({
@@ -32,6 +35,7 @@ class AnswerQuestionBodySchema {
     description: 'An array of attachment IDs (UUIDs)',
     format: 'uuid',
     isArray: true,
+    example: ['1', '2'],
   })
   attachments!: string[]
 }

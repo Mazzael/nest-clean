@@ -24,7 +24,11 @@ const authenticateBodySchema = z.object({
 })
 
 class AuthenticateBodySchema {
-  @ApiProperty({ description: 'The email of the account', format: 'email' })
+  @ApiProperty({
+    description: 'The email of the account',
+    format: 'email',
+    example: 'johndoe@example.com',
+  })
   email!: string
 
   @ApiProperty({ description: 'The password of the account' })

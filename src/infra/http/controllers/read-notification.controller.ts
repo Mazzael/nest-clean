@@ -21,6 +21,7 @@ export class ReadNotificationController {
   @ApiParam({
     name: 'notificationId',
     description: 'The ID of the notification to mark as read',
+    example: '1',
   })
   @ApiResponse({
     status: 204,

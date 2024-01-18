@@ -28,7 +28,10 @@ const editAnswerBodySchema = z.object({
 const bodyValidationPipe = new ZodValidationPipe(editAnswerBodySchema)
 
 class EditAnswerBodySchema {
-  @ApiProperty({ description: 'The new content of the answer' })
+  @ApiProperty({
+    description: 'The new content of the answer',
+    example: 'New answer content',
+  })
   content!: string
 
   @ApiProperty({
@@ -36,6 +39,7 @@ class EditAnswerBodySchema {
     description: 'An array of attachment IDs (UUIDs)',
     format: 'uuid',
     isArray: true,
+    example: ['1', '2'],
   })
   attachments!: string[]
 }
@@ -47,7 +51,11 @@ export class EditAnswerController {
   @Put()
   @HttpCode(204)
   @ApiOperation({ summary: 'Edit an answer' })
-  @ApiParam({ name: 'id', description: 'The ID of the answer to edit' })
+  @ApiParam({
+    name: 'id',
+    description: 'The ID of the answer to edit',
+    example: '1',
+  })
   @ApiBody({ type: EditAnswerBodySchema })
   @ApiResponse({ status: 204, description: 'Answer edited successfully' })
   @ApiResponse({ status: 400, description: 'Bad Request' })

@@ -24,7 +24,10 @@ const commentOnAnswerBodySchema = z.object({
 })
 
 class CommentOnAnswerBodySchema {
-  @ApiProperty({ description: 'The comment of the answer' })
+  @ApiProperty({
+    description: 'The comment of the answer',
+    example: 'Answer comment',
+  })
   content!: string
 }
 
@@ -40,6 +43,7 @@ export class CommentOnAnswerController {
   @ApiParam({
     name: 'answerId',
     description: 'The ID of the answer to comment on',
+    example: '1',
   })
   @ApiBody({ type: CommentOnAnswerBodySchema })
   @ApiResponse({ status: 200, description: 'Comment added successfully' })

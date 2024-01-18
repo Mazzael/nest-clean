@@ -19,10 +19,16 @@ const createQuestionBodySchema = z.object({
 })
 
 class CreateQuestionBodySchema {
-  @ApiProperty({ description: 'The title of the question' })
+  @ApiProperty({
+    description: 'The title of the question',
+    example: 'Question Title',
+  })
   title!: string
 
-  @ApiProperty({ description: 'The content of the question' })
+  @ApiProperty({
+    description: 'The content of the question',
+    example: 'Question Content',
+  })
   content!: string
 
   @ApiProperty({
@@ -30,6 +36,7 @@ class CreateQuestionBodySchema {
     description: 'An array of attachment IDs (UUIDs)',
     format: 'uuid',
     isArray: true,
+    example: ['1', '2'],
   })
   attachments!: string[]
 }

@@ -3,7 +3,13 @@ import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { z } from 'zod'
 import { FetchRecentQuestionsUseCase } from '@/domain/forum/application/use-cases/fetch-recent-questions'
 import { QuestionPresenter } from '../presenters/question-presenter'
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'
+import {
+  ApiOperation,
+  ApiProperty,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 
 const pageQueryParamSchema = z
   .string()
@@ -16,6 +22,38 @@ const queryValidationPipe = new ZodValidationPipe(pageQueryParamSchema)
 
 type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>
 
+class QuestionsResponse {
+  @ApiProperty({ description: 'The ID of the question', example: '1' })
+  id!: string
+
+  @ApiProperty({
+    description: 'The title of the question',
+    example: 'Question Title',
+  })
+  title!: string
+
+  @ApiProperty({
+    description: 'The slug of the question',
+    example: 'question-title',
+  })
+  slug!: string
+
+  @ApiProperty({ description: 'The best answer of the question', example: '1' })
+  bestAnswerId!: string
+
+  @ApiProperty({
+    description: 'The creation timestamp of the question',
+    example: new Date(),
+  })
+  createdAt!: Date
+
+  @ApiProperty({
+    description: 'The last update timestamp of the question',
+    example: new Date(),
+  })
+  updatedAt!: Date
+}
+
 @ApiTags('Questions')
 @Controller('/questions')
 export class FetchRecentQuestionsController {
@@ -26,12 +64,14 @@ export class FetchRecentQuestionsController {
   @ApiQuery({
     name: 'page',
     type: Number,
-    description: 'Page number (default: page 1)',
+    description: 'Page number (default: 1)',
     required: false,
   })
   @ApiResponse({
     status: 200,
     description: 'Recent questions fetched successfully',
+    type: QuestionsResponse,
+    isArray: true,
   })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })

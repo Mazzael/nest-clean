@@ -21,6 +21,7 @@ export class DeleteQuestionCommentController {
   @ApiParam({
     name: 'id',
     description: 'The ID of the comment on the question to delete',
+    example: '1',
   })
   @ApiResponse({
     status: 204,

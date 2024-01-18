@@ -15,6 +15,7 @@ import {
   ApiParam,
   ApiQuery,
   ApiResponse,
+  ApiProperty,
 } from '@nestjs/swagger'
 
 const pageQueryParamSchema = z
@@ -28,6 +29,38 @@ const queryValidationPipe = new ZodValidationPipe(pageQueryParamSchema)
 
 type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>
 
+export class CommentsResponse {
+  @ApiProperty({ description: 'The ID of the comment', example: '1' })
+  commentId!: string
+
+  @ApiProperty({ description: 'The ID of the comment author', example: '1' })
+  authorId!: string
+
+  @ApiProperty({
+    description: 'The content of the comment',
+    example: 'Some comment',
+  })
+  content!: string
+
+  @ApiProperty({
+    description: 'The name of the comment author',
+    example: 'John Doe',
+  })
+  authorName!: string
+
+  @ApiProperty({
+    description: 'The creation timestamp of the comment',
+    example: new Date(),
+  })
+  createdAt!: Date
+
+  @ApiProperty({
+    description: 'The last update timestamp of the comment',
+    example: new Date(),
+  })
+  updatedAt!: Date
+}
+
 @ApiTags('Answers')
 @Controller('/answers/:answerId/comments')
 export class FetchAnswerCommentsController {
@@ -38,16 +71,19 @@ export class FetchAnswerCommentsController {
   @ApiParam({
     name: 'answerId',
     description: 'The ID of the answer to fetch comments for',
+    example: '1',
   })
   @ApiQuery({
     name: 'page',
     type: Number,
-    description: 'Page number (default: page 1)',
+    description: 'Page number (default: 1)',
     required: false,
   })
   @ApiResponse({
     status: 200,
     description: 'Comments fetched successfully',
+    type: CommentsResponse,
+    isArray: true,
   })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })

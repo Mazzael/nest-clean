@@ -18,7 +18,11 @@ export class DeleteQuestionController {
   @Delete()
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete a question' })
-  @ApiParam({ name: 'id', description: 'The ID of the question to delete' })
+  @ApiParam({
+    name: 'id',
+    description: 'The ID of the question to delete',
+    example: '1',
+  })
   @ApiResponse({ status: 204, description: 'Question deleted successfully' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
